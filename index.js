@@ -93,6 +93,13 @@ app.get("/plans", (req, res) => {
   res.json(result);
 });
 
+// Serve raw OpenAPI YAML
+app.get("/api-docs.yaml", (req, res) => {
+  res.type("yaml"); // Set content type
+  res.sendFile(path.join(__dirname, "openapi.yaml"));
+});
+
+
 // Root endpoint
 app.get("/", (req, res) => {
   res.send("Subscription Mock API running. Visit /api-docs for Swagger UI.");
