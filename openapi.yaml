@@ -1,0 +1,245 @@
+openapi: 3.1.0
+info:
+  title: Subscription Mock API
+  description: Mock API for customers, subscriptions, invoices, and plans
+  version: 1.0.0
+servers:
+  - url: http://localhost:3000
+    description: Local development server
+paths:
+  /customers:
+    get:
+      summary: List customers
+      description: Retrieve all customers, with optional filtering by email
+      parameters:
+        - in: query
+          name: email
+          schema:
+            type: string
+          description: Filter by customer email
+        - in: query
+          name: page
+          schema:
+            type: integer
+            default: 1
+          description: Page number
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            default: 50
+          description: Number of items per page
+      responses:
+        '200':
+          description: A list of customers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Customer'
+
+  /subscriptions:
+    get:
+      summary: List subscriptions
+      description: Retrieve subscriptions, with optional filtering
+      parameters:
+        - in: query
+          name: customer_id
+          schema:
+            type: string
+          description: Filter by customer ID
+        - in: query
+          name: plan_id
+          schema:
+            type: string
+          description: Filter by plan ID
+        - in: query
+          name: status
+          schema:
+            type: string
+            enum: [active, trialing, cancelled]
+          description: Filter by subscription status
+        - in: query
+          name: next_billing_at
+          schema:
+            type: integer
+          description: Filter by next billing timestamp (UNIX epoch)
+        - in: query
+          name: page
+          schema:
+            type: integer
+            default: 1
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            default: 50
+      responses:
+        '200':
+          description: A list of subscriptions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Subscription'
+
+  /invoices:
+    get:
+      summary: List invoices
+      description: Retrieve invoices, with optional filtering
+      parameters:
+        - in: query
+          name: subscription_id
+          schema:
+            type: string
+          description: Filter by subscription ID
+        - in: query
+          name: customer_id
+          schema:
+            type: string
+          description: Filter by customer ID
+        - in: query
+          name: status
+          schema:
+            type: string
+            enum: [paid, pending, void]
+          description: Filter by invoice status
+        - in: query
+          name: total
+          schema:
+            type: integer
+          description: Filter by total amount (in cents)
+        - in: query
+          name: page
+          schema:
+            type: integer
+            default: 1
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            default: 50
+      responses:
+        '200':
+          description: A list of invoices
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Invoice'
+
+  /plans:
+    get:
+      summary: List plans
+      description: Retrieve available plans, with optional filtering
+      parameters:
+        - in: query
+          name: id
+          schema:
+            type: string
+        - in: query
+          name: name
+          schema:
+            type: string
+        - in: query
+          name: price
+          schema:
+            type: integer
+        - in: query
+          name: page
+          schema:
+            type: integer
+            default: 1
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            default: 50
+      responses:
+        '200':
+          description: A list of plans
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Plan'
+
+components:
+  schemas:
+    Customer:
+      type: object
+      properties:
+        id:
+          type: string
+        email:
+          type: string
+        first_name:
+          type: string
+        last_name:
+          type: string
+      required:
+        - id
+        - email
+        - first_name
+        - last_name
+
+    Subscription:
+      type: object
+      properties:
+        id:
+          type: string
+        customer_id:
+          type: string
+        plan_id:
+          type: string
+        status:
+          type: string
+          enum: [active, trialing, cancelled]
+        next_billing_at:
+          type: integer
+          description: UNIX timestamp of next billing
+      required:
+        - id
+        - customer_id
+        - plan_id
+        - status
+        - next_billing_at
+
+    Invoice:
+      type: object
+      properties:
+        id:
+          type: string
+        subscription_id:
+          type: string
+        customer_id:
+          type: string
+        total:
+          type: integer
+        status:
+          type: string
+          enum: [paid, pending, void]
+      required:
+        - id
+        - subscription_id
+        - customer_id
+        - total
+        - status
+
+    Plan:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        price:
+          type: integer
+      required:
+        - id
+        - name
+        - price
