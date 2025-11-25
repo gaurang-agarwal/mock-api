@@ -7,7 +7,7 @@ servers:
   - url: http://localhost:3000
     description: Local development server
 paths:
-  /customers:
+  /mock-billing/customers:
     get:
       summary: List customers
       description: Retrieve all customers, with optional filtering by email
@@ -39,7 +39,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/Customer'
 
-  /subscriptions:
+  /mock-billing/subscriptions:
     get:
       summary: List subscriptions
       description: Retrieve subscriptions, with optional filtering
@@ -85,7 +85,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/Subscription'
 
-  /invoices:
+  /mock-billing/invoices:
     get:
       summary: List invoices
       description: Retrieve invoices, with optional filtering
@@ -131,7 +131,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/Invoice'
 
-  /plans:
+  /mock-billing/plans:
     get:
       summary: List plans
       description: Retrieve available plans, with optional filtering

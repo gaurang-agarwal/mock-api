@@ -1,4 +1,6 @@
 const express = require("express");
+const billing = express.Router();
+
 const fs = require("fs");
 const readline = require("readline");
 const path = require("path");
@@ -66,32 +68,34 @@ let plans = [];
 // ------------------- Endpoints -------------------
 
 // Customers
-app.get("/customers", (req, res) => {
+billing.get("/customers", (req, res) => {
   let result = filterData(customers, req.query);
   result = paginate(result, req.query.page, req.query.limit);
   res.json(result);
 });
 
 // Subscriptions
-app.get("/subscriptions", (req, res) => {
+billing.get("/subscriptions", (req, res) => {
   let result = filterData(subscriptions, req.query);
   result = paginate(result, req.query.page, req.query.limit);
   res.json(result);
 });
 
 // Invoices
-app.get("/invoices", (req, res) => {
+billing.get("/invoices", (req, res) => {
   let result = filterData(invoices, req.query);
   result = paginate(result, req.query.page, req.query.limit);
   res.json(result);
 });
 
 // Plans
-app.get("/plans", (req, res) => {
+billing.get("/plans", (req, res) => {
   let result = filterData(plans, req.query);
   result = paginate(result, req.query.page, req.query.limit);
   res.json(result);
 });
+
+app.use("/mock-billing",billing);
 
 // Serve raw OpenAPI YAML
 app.get("/api-docs.yaml", (req, res) => {
@@ -102,7 +106,7 @@ app.get("/api-docs.yaml", (req, res) => {
 
 // Root endpoint
 app.get("/", (req, res) => {
-  res.send("Subscription Mock API running. Visit /api-docs for Swagger UI.");
+  res.send("Mock API running. Visit /api-docs for Swagger UI.");
 });
 
 // Start server
